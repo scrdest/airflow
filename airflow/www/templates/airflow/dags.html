@@ -73,9 +73,21 @@
             <th width="12">
               <span id="pause_header" class="material-icons text-muted" title="Use this toggle to pause a DAG. The scheduler won't schedule new tasks instances for a paused DAG. Tasks already running at pause time won't be affected.">info</span>
             </th>
-            <th>DAG</th>
-            <th>Schedule</th>
-            <th>Owner</th>
+            <th>
+              <a href="{{ url_for('Airflow.index', status=request.args.get('status', 'all'), search=request.args.get('search', None), tags=request.args.get('tags', None), sortBy='dag_id', orderBy='asc' if request.args.get('sortBy') != 'dag_id' or request.args.get('orderBy', 'desc') != 'asc' else 'desc' ) }}">
+                DAG
+              </a>
+            </th>
+            <th>
+              <a href="{{ url_for('Airflow.index', status=request.args.get('status', 'all'), search=request.args.get('search', None), tags=request.args.get('tags', None), sortBy='schedule', orderBy='asc' if request.args.get('sortBy') != 'owner' or request.args.get('orderBy', 'schedule') != 'asc' else 'desc' ) }}">
+                Schedule
+              </a>
+            </th>
+            <th>
+              <a href="{{ url_for('Airflow.index', status=request.args.get('status', 'all'), search=request.args.get('search', None), tags=request.args.get('tags', None), sortBy='owner', orderBy='asc' if request.args.get('sortBy') != 'owner' or request.args.get('orderBy', 'desc') != 'asc' else 'desc' ) }}">
+                Owner
+              </a>
+            </th>
             <th>
               Recent Tasks
               <span class="material-icons text-muted js-tooltip" aria-hidden="true" title="Status of tasks from all active DAG runs or, if not currently active, from most recent run.">info</span>
