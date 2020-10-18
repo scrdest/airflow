@@ -78,7 +78,7 @@ from airflow.www.decorators import action_logging, gzipped, has_dag_access
 from airflow.www.forms import (
     ConnectionForm, DagRunForm, DateTimeForm, DateTimeWithNumRunsForm, DateTimeWithNumRunsWithDagRunsForm,
 )
-from airflow.www.utils import dag_sorting_query
+from airflow.www.utils import build_dag_sorting_query
 from airflow.www.widgets import AirflowModelListWidget
 
 PAGE_SIZE = conf.getint('webserver', 'page_size')
@@ -490,11 +490,9 @@ class Airflow(AirflowBaseView):  # noqa: D101  pylint: disable=too-many-public-m
                 current_dags = all_dags
                 num_of_all_dags = all_dags_count
 
-            order_by_query = dag_sorting_query(
+            order_by_query = build_dag_sorting_query(
                 sorting_key=arg_sorting_key,
-                sorting_order=arg_orderby_key,
-                session=session
-            )
+                sorting_order=arg_orderby_key)
 
             dags = current_dags.order_by(order_by_query).options(
                 joinedload(DagModel.tags)).offset(start).limit(dags_per_page).all()
