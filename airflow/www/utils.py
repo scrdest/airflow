@@ -29,7 +29,6 @@ from pygments import highlight, lexers
 from pygments.formatters import HtmlFormatter  # noqa pylint: disable=no-name-in-module
 
 from airflow.configuration import conf
-from airflow.models import DagModel
 from airflow.utils import timezone
 from airflow.utils.code_utils import get_python_source
 from airflow.utils.json import AirflowJsonEncoder
@@ -320,48 +319,6 @@ def dag_run_link(attr):
     execution_date = attr.get('execution_date')
     url = url_for('Airflow.graph', dag_id=dag_id, run_id=run_id, execution_date=execution_date)
     return Markup('<a href="{url}">{run_id}</a>').format(url=url, run_id=run_id)  # noqa
-
-
-def dag_query_for_key(sorting_key):
-    """Maps sorting key param in the URL params to DB queries on appropriate attributes."""
-    dag_query_key_map = {
-        'dag_id': DagModel.dag_id,
-        'owner': DagModel.owners,
-        'schedule': DagModel.next_dagrun,
-        # <- add any extra (URL param)->(DagModel attr) mappings here
-    }
-
-    query_key = dag_query_key_map.get(
-        (sorting_key or '').lower(),
-        DagModel.dag_id)  # default to original default behavior
-
-    return query_key
-
-
-def query_ordering_transform_for_key(sorting_order):
-    """Maps sort order param in the URL params to an appropriate transform of an attribute query."""
-    from sqlalchemy import asc, desc
-    sorting_map = {
-        # not the biggest map in the world, but it's extensible and gives us nice default-handling
-        'asc': asc,
-        'desc': desc,
-    }
-
-    # the mapping should be lazily evaluated, so we get back a nullary callable
-    sorting_transform = sorting_map.get(
-        (sorting_order or '').lower(),
-        asc)  # default to original default behavior
-
-    return sorting_transform
-
-
-def build_dag_sorting_query(sorting_key, sorting_order):
-    """Builds a DAG sorting query based on the variables passed to the view (presumably as URL params)."""
-    query_key = dag_query_for_key(sorting_key=sorting_key)
-    ordering_transform = query_ordering_transform_for_key(sorting_order=sorting_order)
-    # ordering_transform is a callable, we need to run it to extract the value:
-    query_with_sorting = ordering_transform(query_key)
-    return query_with_sorting
 
 
 def pygment_html_render(s, lexer=lexers.TextLexer):  # noqa pylint: disable=no-member
