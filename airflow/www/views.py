@@ -166,9 +166,7 @@ def get_date_time_num_runs_dag_runs_form_data(www_request, session, dag):
 
     drs = (
         session.query(DagRun)
-        .filter(
-            DagRun.dag_id == dag.dag_id,
-            DagRun.execution_date <= base_date)
+        .filter(DagRun.dag_id == dag.dag_id, DagRun.execution_date <= base_date)
         .order_by(desc(DagRun.execution_date))
         .limit(num_runs)
         .all()
@@ -366,8 +364,8 @@ def dag_query_for_key(sorting_key):
     }
 
     query_key = dag_query_key_map.get(
-        (sorting_key or '').lower(),
-        DagModel.dag_id)  # default to original default behavior
+        (sorting_key or '').lower(), DagModel.dag_id
+    )  # default to original default behavior
 
     return query_key
 
@@ -382,8 +380,8 @@ def query_ordering_transform_for_key(sorting_order):
 
     # the mapping should be lazily evaluated, so we get back a nullary callable
     sorting_transform = sorting_map.get(
-        (sorting_order or '').lower(),
-        asc)  # default to original default behavior
+        (sorting_order or '').lower(), asc
+    )  # default to original default behavior
 
     return sorting_transform
 
@@ -607,8 +605,8 @@ class Airflow(AirflowBaseView):  # noqa: D101  pylint: disable=too-many-public-m
                 num_of_all_dags = all_dags_count
 
             order_by_query = build_dag_sorting_query(
-                sorting_key=arg_sorting_key,
-                sorting_order=arg_orderby_key)
+                sorting_key=arg_sorting_key, sorting_order=arg_orderby_key
+            )
 
             dags = (
                 current_dags.order_by(order_by_query)
@@ -676,12 +674,14 @@ class Airflow(AirflowBaseView):  # noqa: D101  pylint: disable=too-many-public-m
             num_dag_from=min(start + 1, num_of_all_dags),
             num_dag_to=min(end, num_of_all_dags),
             num_of_all_dags=num_of_all_dags,
-            paging=wwwutils.generate_pages(current_page,
-                                           num_of_pages,
-                                           search=escape(arg_search_query) if arg_search_query else None,
-                                           status=arg_status_filter if arg_status_filter else None,
-                                           sorting_key=arg_sorting_key,
-                                           sorting_order=arg_orderby_key),
+            paging=wwwutils.generate_pages(
+                current_page,
+                num_of_pages,
+                search=escape(arg_search_query) if arg_search_query else None,
+                status=arg_status_filter if arg_status_filter else None,
+                sorting_key=arg_sorting_key,
+                sorting_order=arg_orderby_key,
+            ),
             num_runs=num_runs,
             tags=tags,
             state_color=state_color_mapping,

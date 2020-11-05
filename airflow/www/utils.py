@@ -143,11 +143,15 @@ def generate_pages(current_page,
 
     page_link = void_link
     if current_page > 0:
-        page_link = '?{}'.format(get_params(page=(current_page - 1),
-                                            search=search,
-                                            status=status,
-                                            sortBy=sorting_key,
-                                            orderBy=sorting_order))
+        page_link = '?{}'.format(
+            get_params(
+                page=(current_page - 1),
+                search=search,
+                status=status,
+                sortBy=sorting_key,
+                orderBy=sorting_order,
+            )
+        )
 
     output.append(previous_node.format(href_link=page_link, disabled=is_disabled))  # noqa
 
@@ -179,22 +183,21 @@ def generate_pages(current_page,
     page_link = (
         void_link
         if current_page >= num_of_pages - 1
-        else '?{}'.format(get_params(page=current_page + 1,
-                                     search=search,
-                                     status=status,
-                                     sortBy=sorting_key,
-                                     orderBy=sorting_order))
+        else '?{}'.format(
+            get_params(
+                page=current_page + 1, search=search, status=status, sortBy=sorting_key, orderBy=sorting_order
+            )
+        )
     )
 
     output.append(next_node.format(href_link=page_link, disabled=is_disabled))  # noqa
-
-    last_node_link = (
-        void_link if is_disabled
-        else f'?{get_params(page=last_page, search=search, status=status, orderBy=sorting_key, orderDir=sorting_order)}'
-    )
     output.append(
         last_node.format(
-            href_link=last_node_link,
+            href_link="?{}".format(  # noqa
+                get_params(
+                    page=last_page, search=search, status=status, sortBy=sorting_key, orderBy=sorting_order
+                )
+            ),
             disabled=is_disabled,
         )
     )
