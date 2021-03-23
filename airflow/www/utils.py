@@ -185,7 +185,11 @@ def generate_pages(current_page,
         if current_page >= num_of_pages - 1
         else '?{}'.format(
             get_params(
-                page=current_page + 1, search=search, status=status, orderBy=sorting_key, orderDir=sorting_order
+                page=current_page + 1,
+                search=search,
+                status=status,
+                orderBy=sorting_key,
+                orderDir=sorting_order,
             )
         )
     )
